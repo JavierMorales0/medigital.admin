@@ -5,7 +5,7 @@ export const MainContainer = () => {
   return (
     <>
       <NavBar />
-      <main style={{ marginLeft: '100px' }}>
+      <main className='px-2 px-md-3 py-1 py-md-2'>
         <Outlet />
       </main>
     </>

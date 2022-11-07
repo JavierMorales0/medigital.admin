@@ -1,0 +1,8 @@
+._link {
+  color: var(--surface-600) !important;
+  letter-spacing: 0.2px;
+  transition: all 0.3s ease-in-out;
+}
+._link:hover {
+  color: var(--surface-900) !important;
+}

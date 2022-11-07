@@ -33,10 +33,29 @@ body {
   background: #555;
 }
 
+._lightest {
+  font-weight: 100;
+}
+
+._lighter {
+  font-weight: 200;
+}
+
+._light {
+  font-weight: 300;
+}
+
 ._bold {
   font-weight: 600;
+}
+._bolder {
+  font-weight: 700;
 }
 
 ._boldest {
   font-weight: 800;
+}
+
+.p-autocomplete > input {
+  width: 100%;
 }

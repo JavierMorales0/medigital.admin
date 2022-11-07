@@ -1,18 +1,80 @@
+import { useState } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
+import { mainRoutes, routes } from '@/helpers/routes.js'
+import { AutoComplete } from 'primereact/autocomplete'
+import '@/assets/css/Navbar.css'
+
 export const NavBar = () => {
+  const navigate = useNavigate()
+  const [search, setSearch] = useState('')
+  const [suggestions, setSuggestions] = useState(routes)
+  /**
+   * event to set the suggestions by the event.query param
+   * @param {Object} event
+   */
+  const searchRoute = (event) => {
+    const _suggestions = routes.filter((item) => {
+      return item.matchWords.includes(event.query) ? item : null
+    })
+    setSuggestions(_suggestions)
+  }
+  /**
+   * Function to go to the specific path
+   * @param {Object} route
+   */
+  const goTo = (route) => {
+    if (!route.url) {
+      alert('Imposible')
+    }
+    navigate(route.url)
+  }
   return (
     <>
       <nav
-        className='d-flex flex-column justify-content-start align-items-center position-fixed top-0 start-0 bottom-0 px-2 py-3'
+        className='d-flex flex-row justify-content-between align-items-center px-5 py-3 w-100'
         style={{
-          height: '100vh',
-          width: '200px',
+          minHeight: '80px',
+          maxHeight: '100px',
           backgroundColor: 'var(--surface-100)',
         }}
       >
-        <div className='w-100 p-card container text-center'>
-          <span className=' _bold text-center'>MEDIGITAL</span>
+        <div className=''>
+          <span className=' _bold text-center'>
+            MEDIGITAL
+            <span className='_boldest' style={{ fontSize: '.8rem' }}>
+              .admin
+            </span>
+          </span>
         </div>
-        <div className='w-100'>asd</div>
+        <div>
+          <AutoComplete
+            value={search}
+            suggestions={suggestions}
+            completeMethod={searchRoute}
+            field='label'
+            onChange={(e) => setSearch(e.value)}
+            placeholder='Ingrese acci&oacute;n que desea realizar (ver, crear)'
+            style={{ minWidth: '400px' }}
+            onSelect={(e) => goTo(e.value)}
+          />
+        </div>
+        <div
+          className='d-flex flex-row align-items-center justify-content-around gap-2'
+          style={{ minWidth: '450px' }}
+        >
+          {mainRoutes.map((item) => {
+            return (
+              <Link
+                key={item.label}
+                to={item.url}
+                className='m-0 _link'
+                style={{ textDecoration: 'none', color: 'var(--color-text)' }}
+              >
+                {item.label}
+              </Link>
+            )
+          })}
+        </div>
       </nav>
     </>
   )
