@@ -64,3 +64,12 @@ export const updateConsult = (data) => {
       .catch((error) => reject(error))
   })
 }
+
+export const getDiagnostics = (signal) => {
+  return new Promise((resolve, reject) => {
+    _API
+      .get(`/diagnostics`, { signal })
+      .then(({ data }) => resolve(data))
+      .catch((error) => reject(error))
+  })
+}

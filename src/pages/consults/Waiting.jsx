@@ -39,7 +39,6 @@ export const Waiting = () => {
       )
       return
     }
-    setSelectedConsult(item)
     // Set on localstorage the current consult
     localStorage.setItem(
       'medigital.admin:current_consult',
@@ -47,6 +46,7 @@ export const Waiting = () => {
     )
     const consult = prepareConsultData(item)
     _updateConsult(consult)
+    setSelectedConsult(item)
     // Delete consult from waiting list
     setWaitingConsults((currentList) => {
       return currentList.filter((element) => element._id !== item._id)
