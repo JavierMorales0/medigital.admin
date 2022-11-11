@@ -1,11 +1,14 @@
 import { AutoComplete } from 'primereact/autocomplete'
+import { memo } from 'react'
 
-export const PatientSearch = ({
+const AutoCompleteComponent = ({
   value,
   field,
   suggestions,
   completeMethod,
+  setValue,
   setData,
+  placeholder = '',
 }) => {
   return (
     <AutoComplete
@@ -13,21 +16,14 @@ export const PatientSearch = ({
       suggestions={suggestions}
       completeMethod={completeMethod}
       field={field}
+      placeholder={placeholder}
       className='w-100'
-      onChange={(e) =>
-        setData((current) => {
-          return { ...current, patient: e.value }
-        })
-      }
+      onChange={(e) => setValue(e)}
       onSelect={(e) => {
-        setData((current) => {
-          return {
-            ...current,
-            patient: e.value._id,
-            seletedPatientName: e.value.name,
-          }
-        })
+        setData(e)
       }}
     />
   )
 }
+
+export default memo(AutoCompleteComponent)

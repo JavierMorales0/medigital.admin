@@ -1,13 +1,19 @@
 import { useContext, useEffect, useState } from 'react'
 import { ConsultContext } from '@/pages/consults/Overview'
-import { updateConsult, getDiagnostics } from '@/api/endpoints'
+import {
+  updateConsult,
+  getDiagnostics,
+  getSpecificConsult,
+} from '@/api/endpoints'
 import { Loader } from '@/components/Loader'
 import { Button } from 'primereact/button'
 import { ToastContainer, toast } from 'react-toastify'
 import { InputText } from 'primereact/inputtext'
 import { InputTextarea } from 'primereact/inputtextarea'
 import moment from 'moment'
-import { DiagnosticSelector } from '@/components/AutoComplete/DiagnosticSelector'
+import AutoCompleteComponent from '@/components/AutoCompleteComponent'
+import ListComponent from '@/components/ListComponent'
+import ManagePrescriptions from '@/components/ManagePrescriptions'
 
 export const Doing = () => {
   const { selectedConsult, setSelectedConsult } = useContext(ConsultContext)
@@ -16,12 +22,25 @@ export const Doing = () => {
   const [diagnostics, setDiagnostics] = useState([])
   const [filteredDiagnostics, setFilteredDiagnostics] = useState([])
   useEffect(() => {
+    let _consult = null
     if (!selectedConsult) {
-      const _consult = JSON.parse(
+      _consult = JSON.parse(
         localStorage.getItem('medigital.admin:current_consult')
       )
-      setSelectedConsult(_consult)
     }
+    const controllerGetSpecificConsult = new AbortController()
+    const _getSpecificConsult = async () => {
+      try {
+        const response = await getSpecificConsult(
+          _consult._id,
+          controllerGetSpecificConsult.signal
+        )
+        setSelectedConsult(response)
+      } catch (err) {
+        showNotification(err.msg, 'error')
+      }
+    }
+
     const controllerGetDiagnostics = new AbortController()
     const _getDiagnostics = async () => {
       try {
@@ -34,6 +53,7 @@ export const Doing = () => {
         showNotification(err.msg, 'error')
       }
     }
+    _getSpecificConsult()
     _getDiagnostics()
     return () => {
       controllerGetDiagnostics.abort
@@ -68,7 +88,7 @@ export const Doing = () => {
       patient: consult.patient._id,
       date: consult.date.slice(0, 10),
       status: 'FINISHED',
-      end_hour: moment().format('hh:mm'),
+      end_hour: moment().format('HH:mm'),
     }
   }
 
@@ -78,16 +98,24 @@ export const Doing = () => {
       {loading && <Loader />}
       <div>
         <div className='d-flex justify-content-between align-items-center'>
-          <p className='m-0 _bold'>ID: {selectedConsult._id} </p>
+          <div>
+            <p className='m-0 _bold'>ID: {selectedConsult._id} </p>
+            <p className='m-0'>HORA INICIO: {selectedConsult.start_hour}</p>
+          </div>
           <div>
             <p className='m-0'>
               {`${selectedConsult.patient.first_name} ${selectedConsult.patient.last_name}`}
             </p>
-            <h6 className='m-0' style={{ maxWidth: '300px' }}>
+            <h6 className='m-0' style={{ maxWidth: '400px' }}>
               {selectedConsult.observations !== ''
                 ? selectedConsult.observations
                 : 'SIN OBSERVACIONES'}
             </h6>
+            <Button
+              label='Finalizar consulta'
+              className='my-1 mx-auto d-block'
+              onClick={finishConsult}
+            />
           </div>
         </div>
 
@@ -144,25 +172,62 @@ export const Doing = () => {
           </div>
           <div className='col-12 col-md-6 my-2'>
             <label>Diagn&oacute;stico </label>
-            <DiagnosticSelector
+            <AutoCompleteComponent
               value={diagnostic}
               suggestions={filteredDiagnostics.slice(0, 15)}
               completeMethod={searchDiagnostic}
               field={'nameMin'}
-              setValue={setDiagnostic}
-              setData={setSelectedConsult}
               placeholder={'Agregar un diagnóstico'}
+              setValue={(e) => setDiagnostic(e.value)}
+              setData={(e) => {
+                setSelectedConsult((current) => {
+                  console.log(current.diagnostic, 'current')
+                  return {
+                    ...current,
+                    diagnostic: [...current.diagnostic, e.value],
+                  }
+                })
+                setDiagnostic('')
+              }}
             />
-            <ul className='w-100'>
-              {selectedConsult.diagnostic.map((item) => {
-                return <li key={item._id}>{item.name}</li>
-              })}
-            </ul>
+            {selectedConsult.diagnostic?.length > 0 ? (
+              <>
+                <div className='mt-2 d-flex justify-content-between align-items-center'>
+                  <p className='text-center m-0'>
+                    Listado de diagn&oacute;sticos
+                  </p>
+                </div>
+                <ListComponent
+                  list={selectedConsult.diagnostic}
+                  selector='name'
+                  prefix='*'
+                  ulStyle={{
+                    width: '100%',
+                    listStyle: 'none',
+                    padding: '10px',
+                    margin: 0,
+                    maxHeight: '100px',
+                    overflow: 'auto',
+                  }}
+                  liStyle={{ fontWeight: '300', fontSize: '.9rem' }}
+                />
+                <Button
+                  label='Limpiar lista'
+                  className='p-button-text p-button-danger'
+                  onClick={() =>
+                    setSelectedConsult((current) => {
+                      return { ...current, diagnostic: [] }
+                    })
+                  }
+                />
+              </>
+            ) : null}
           </div>
-          <div className='col-12 col-md-3 my-2'>
+          <div className='col-12 col-md-6 my-2'>
             <label>Observaciones </label>
             <InputTextarea
               value={selectedConsult.observations}
+              rows={3}
               onChange={(e) => {
                 setSelectedConsult((current) => {
                   return {
@@ -175,8 +240,10 @@ export const Doing = () => {
               placeholder='Ingrese las observaciones'
             />
           </div>
+          <div className='col-12'>
+            <ManagePrescriptions _id={selectedConsult._id} />
+          </div>
         </section>
-        <Button label='Finalizar consulta' onClick={finishConsult} />
       </div>
     </>
   ) : null

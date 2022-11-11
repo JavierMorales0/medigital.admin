@@ -3,8 +3,6 @@ import { Calendar } from 'primereact/calendar'
 import { InputTextarea } from 'primereact/inputtextarea'
 import { Button } from 'primereact/button'
 import { useRef, useState, useEffect } from 'react'
-import { DoctorSearch } from '@/components/AutoComplete/DoctorSearch'
-import { PatientSearch } from '@/components/AutoComplete/PatientSearch'
 import { Loader } from '@/components/Loader'
 import {
   getSpecificAppointment,
@@ -14,6 +12,7 @@ import {
 } from '@/api/endpoints.js'
 import { validateCreateConsult } from '@/helpers/validation'
 import { ToastContainer, toast } from 'react-toastify'
+import AutoCompleteComponent from '@/components/AutoCompleteComponent'
 
 export const Create = () => {
   const appointmentRef = useRef()
@@ -206,12 +205,26 @@ export const Create = () => {
         </div>
         <div className='col-12 col-md-6 my-2'>
           <label>Paciente *</label>
-          <PatientSearch
+          <AutoCompleteComponent
             value={consult.patient}
             suggestions={filteredPatients}
             completeMethod={searchPatient}
             field={'detail'}
-            setData={setConsult}
+            placeholder={'Seleccione un paciente'}
+            setValue={(e) =>
+              setConsult((current) => {
+                return { ...current, patient: e.value }
+              })
+            }
+            setData={(e) =>
+              setConsult((current) => {
+                return {
+                  ...current,
+                  patient: e.value._id,
+                  seletedPatientName: e.value.name,
+                }
+              })
+            }
           />
           <p className='text-muted m-0' style={{ fontSize: '.8rem' }}>
             Sugerencia: {consult.suggestPatientName}
@@ -224,12 +237,26 @@ export const Create = () => {
         </div>
         <div className='col-12 col-md-6 my-2'>
           <label>Doctor *</label>
-          <DoctorSearch
+          <AutoCompleteComponent
             value={consult.doctor}
-            field={'name'}
             suggestions={filteredDoctors}
             completeMethod={searchDoctor}
-            setData={setConsult}
+            field={'name'}
+            placeholder={'Seleccione un doctor'}
+            setValue={(e) =>
+              setConsult((current) => {
+                return { ...current, doctor: e.value }
+              })
+            }
+            setData={(e) =>
+              setConsult((current) => {
+                return {
+                  ...current,
+                  doctor: e.value._id,
+                  selectedDoctorName: e.value.name,
+                }
+              })
+            }
           />
           {consult.doctor !== '' && consult.selectedDoctorName !== '' ? (
             <p className=' m-0' style={{ fontSize: '.8rem' }}>

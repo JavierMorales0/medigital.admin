@@ -47,6 +47,23 @@ export const getWaitingConsults = (signal) => {
   })
 }
 
+export const getSpecificConsult = (_id, signal) => {
+  return new Promise((resolve, reject) => {
+    _API
+      .get(`/consults/${_id}`, { signal })
+      .then(({ data }) => resolve(data))
+      .catch((error) => reject(error))
+  })
+}
+
+export const getPrescriptionsByIdConsult = (_id, signal) => {
+  return new Promise((resolve, reject) => {
+    _API
+      .get(`/prescriptions?consult=${_id}`, { signal })
+      .then(({ data }) => resolve(data))
+      .catch((error) => reject(error))
+  })
+}
 export const createConsult = (data) => {
   return new Promise((resolve, reject) => {
     _API

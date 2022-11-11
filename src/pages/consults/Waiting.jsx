@@ -71,7 +71,7 @@ export const Waiting = () => {
       patient: consult.patient._id,
       date: consult.date.slice(0, 10),
       status: 'IN PROGRESS',
-      start_hour: moment().format('hh:mm'),
+      start_hour: moment().format('HH:mm'),
     }
   }
   return (
