@@ -90,3 +90,39 @@ export const getDiagnostics = (signal) => {
       .catch((error) => reject(error))
   })
 }
+
+export const getMedicines = (signal) => {
+  return new Promise((resolve, reject) => {
+    _API
+      .get(`/medicines`, { signal })
+      .then(({ data }) => resolve(data))
+      .catch((error) => reject(error))
+  })
+}
+
+export const getAvailableMedicines = (signal) => {
+  return new Promise((resolve, reject) => {
+    _API
+      .get(`/medicines?available=true`, { signal })
+      .then(({ data }) => resolve(data))
+      .catch((error) => reject(error))
+  })
+}
+
+export const createMovement = (data) => {
+  return new Promise((resolve, reject) => {
+    _API
+      .post(`/movements`, data)
+      .then(({ data }) => resolve(data))
+      .catch((error) => reject(error))
+  })
+}
+
+export const getMovements = (signal) => {
+  return new Promise((resolve, reject) => {
+    _API
+      .get(`/movements`, { signal })
+      .then(({ data }) => resolve(data))
+      .catch((error) => reject(error))
+  })
+}
