@@ -181,7 +181,6 @@ export const Doing = () => {
               setValue={(e) => setDiagnostic(e.value)}
               setData={(e) => {
                 setSelectedConsult((current) => {
-                  console.log(current.diagnostic, 'current')
                   return {
                     ...current,
                     diagnostic: [...current.diagnostic, e.value],
