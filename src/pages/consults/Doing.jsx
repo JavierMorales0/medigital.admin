@@ -22,19 +22,23 @@ export const Doing = () => {
   const [diagnostics, setDiagnostics] = useState([])
   const [filteredDiagnostics, setFilteredDiagnostics] = useState([])
   useEffect(() => {
-    let _consult = null
-    if (!selectedConsult) {
-      _consult = JSON.parse(
-        localStorage.getItem('medigital.admin:current_consult')
-      )
+    const CURRENT_CONSULT = localStorage.getItem(
+      'medigital.admin:current_consult'
+    )
+    if (!CURRENT_CONSULT) {
+      return
     }
     const controllerGetSpecificConsult = new AbortController()
     const _getSpecificConsult = async () => {
       try {
         const response = await getSpecificConsult(
-          _consult._id,
+          CURRENT_CONSULT,
           controllerGetSpecificConsult.signal
         )
+        // Si la consulta ya esta finalizada
+        if (response.status === 'FINISHED') {
+          return
+        }
         setSelectedConsult(response)
       } catch (err) {
         showNotification(err.msg, 'error')
@@ -102,7 +106,7 @@ export const Doing = () => {
             <p className='m-0 _bold'>ID: {selectedConsult._id} </p>
             <p className='m-0'>HORA INICIO: {selectedConsult.start_hour}</p>
           </div>
-          <div>
+          <div className='text-end'>
             <p className='m-0'>
               {`${selectedConsult.patient.first_name} ${selectedConsult.patient.last_name}`}
             </p>
@@ -113,7 +117,7 @@ export const Doing = () => {
             </h6>
             <Button
               label='Finalizar consulta'
-              className='my-1 mx-auto d-block'
+              className='my-1'
               onClick={finishConsult}
             />
           </div>
@@ -245,7 +249,9 @@ export const Doing = () => {
         </section>
       </div>
     </>
-  ) : null
+  ) : (
+    <p>No hay consulta activa</p>
+  )
 }
 
 const showNotification = (msg, status) => {

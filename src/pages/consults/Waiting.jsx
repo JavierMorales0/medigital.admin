@@ -32,7 +32,10 @@ export const Waiting = () => {
 
   const selectConsultToNextStep = (item) => {
     // If an element is already selected
-    if (selectedConsult) {
+    if (
+      selectedConsult ||
+      localStorage.getItem('meigital.admin:current_consult')
+    ) {
       showNotification(
         'Ya existe una consulta en proceso, finalice la consulta para poder mover otra a consultorio',
         'warning'
@@ -40,13 +43,10 @@ export const Waiting = () => {
       return
     }
     // Set on localstorage the current consult
-    localStorage.setItem(
-      'medigital.admin:current_consult',
-      JSON.stringify(item)
-    )
+    localStorage.setItem('medigital.admin:current_consult', item._id)
     const consult = prepareConsultData(item)
     _updateConsult(consult)
-    setSelectedConsult(item)
+    //setSelectedConsult(item)
     // Delete consult from waiting list
     setWaitingConsults((currentList) => {
       return currentList.filter((element) => element._id !== item._id)
@@ -79,17 +79,19 @@ export const Waiting = () => {
       <ToastContainer />
       {loading && <Loader />}
       <div className='d-flex justify-content-around align-items-center gap-3 flex-wrap'>
-        {waitingConsults.length > 0
-          ? waitingConsults.map((item) => {
-              return (
-                <DetailWaitingConsult
-                  key={item._id}
-                  value={item}
-                  selectConsultToNextStep={selectConsultToNextStep}
-                />
-              )
-            })
-          : null}
+        {waitingConsults.length > 0 ? (
+          waitingConsults.map((item) => {
+            return (
+              <DetailWaitingConsult
+                key={item._id}
+                value={item}
+                selectConsultToNextStep={selectConsultToNextStep}
+              />
+            )
+          })
+        ) : (
+          <p>No hay consultas pendientes en sala de espera</p>
+        )}
       </div>
     </>
   )

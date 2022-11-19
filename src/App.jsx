@@ -7,6 +7,7 @@ import { MainContainer } from '@/pages/MainContainer'
 import { Login } from '@/pages/Login'
 import { Overview as OverviewConsult } from './pages/consults/Overview'
 import { Overview as OverviewInventory } from './pages/medicines/Overview'
+import { Overview as OverviewRecords } from './pages/records/Overview'
 
 const _LOGGED_CONTEXT = 'LOGGED'
 
@@ -24,6 +25,7 @@ function App() {
             <Route path='' element={<span>dashboard</span>} />
             <Route path='consulta' element={<OverviewConsult />} />
             <Route path='medicamentos' element={<OverviewInventory />} />
+            <Route path='expediente' element={<OverviewRecords />} />
           </Route>
         </Route>
       </Routes>
