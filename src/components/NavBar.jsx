@@ -3,11 +3,13 @@ import { useNavigate, Link, useLocation } from 'react-router-dom'
 import { mainRoutes, routes } from '@/helpers/routes.js'
 import { AutoComplete } from 'primereact/autocomplete'
 import '@/assets/css/Navbar.css'
+import { Button } from 'primereact/button'
 
 export const NavBar = () => {
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const [search, setSearch] = useState('')
+  const [openMenu, setOpenMenu] = useState(false)
   const [suggestions, setSuggestions] = useState(routes)
   /**
    * event to set the suggestions by the event.query param
@@ -29,18 +31,23 @@ export const NavBar = () => {
     }
     navigate(route.url)
   }
+
   return (
     <>
       <nav
         className='d-flex flex-row justify-content-between align-items-center px-5 py-3 w-100'
         style={{
-          minHeight: '80px',
-          maxHeight: '100px',
-          backgroundColor: 'var(--surface-100)',
+          height: '100px',
+          backgroundColor: 'var(--surface-0)',
         }}
       >
         <div className=''>
-          <span className=' _bold text-center'>
+          <i
+            className='pi pi-bars me-5'
+            style={{ fontSize: '1.3em', cursor: 'pointer' }}
+            onClick={() => setOpenMenu((current) => !current)}
+          ></i>
+          <span className=' _bold text-center' style={{ fontSize: '1.5em' }}>
             MEDIGITAL
             <span
               className='_boldest'
@@ -62,30 +69,75 @@ export const NavBar = () => {
             onSelect={(e) => goTo(e.value)}
           />
         </div>
+        {openMenu ? (
+          <Menu setOpenMenu={setOpenMenu} pathname={pathname} />
+        ) : null}
         <div
           className='d-flex flex-row align-items-center justify-content-around gap-2'
           style={{ minWidth: '450px' }}
-        >
-          {mainRoutes.map((item) => {
-            return (
-              <Link
-                key={item.label}
-                to={item.url}
-                className='m-0 '
-                style={{
-                  textDecoration: pathname === item.url ? 'underline' : 'none',
-                  color:
-                    pathname === item.url
-                      ? 'var(--primary-color)'
-                      : 'var(--color-text)',
-                }}
-              >
-                {item.label}
-              </Link>
-            )
-          })}
-        </div>
+        ></div>
       </nav>
     </>
+  )
+}
+
+const Menu = ({ setOpenMenu, pathname }) => {
+  return (
+    <article
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        bottom: 0,
+        width: '300px',
+        zIndex: 2,
+        backgroundColor: 'var(--surface-0)',
+      }}
+      className='py-3 px-4'
+    >
+      <Button
+        icon='pi pi-times'
+        style={{
+          fontSize: '1.3em',
+          position: 'absolute',
+          top: '10px',
+          right: '10px',
+        }}
+        className='p-button-rounded p-button-outlined'
+        onClick={() => setOpenMenu((current) => !current)}
+      />
+      <p className='_bold m-0'>Username</p>
+      <p
+        className=''
+        style={{ fontSize: '.9rem', color: 'var(--primary-color)' }}
+      >
+        Bienvenido al portal
+      </p>
+      <hr />
+      <div className='d-flex flex-column gap-2 w-100 container '>
+        {mainRoutes.map((item) => {
+          return (
+            <Link
+              key={item.label}
+              to={item.url}
+              className='my-2 '
+              style={{
+                textDecoration: pathname === item.url ? 'underline' : 'none',
+                color:
+                  pathname === item.url
+                    ? 'var(--primary-color)'
+                    : 'var(--color-text)',
+              }}
+              onClick={() => setOpenMenu((current) => !current)}
+            >
+              <i className={`${item.icon} me-3`}></i>
+              <span className=''>{item.label}</span>
+            </Link>
+          )
+        })}
+      </div>
+      <hr />
+      <p>Cierra sesi&oacute;n</p>
+    </article>
   )
 }

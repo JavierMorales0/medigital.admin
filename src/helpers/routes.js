@@ -2,18 +2,22 @@ export const mainRoutes = [
   {
     label: 'Inicio',
     url: '/',
+    icon: 'pi pi-home',
   },
   {
     label: 'Consulta',
     url: '/consulta',
+    icon: 'pi pi-clock',
   },
   {
     label: 'Expediente',
     url: '/expediente',
+    icon: 'pi pi-file',
   },
   {
     label: 'Medicamentos',
     url: '/medicamentos',
+    icon: 'pi pi-book',
   },
 ]
 
