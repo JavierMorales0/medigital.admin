@@ -7,7 +7,7 @@ import {
 } from '@/api/endpoints'
 import { Loader } from '@/components/Loader'
 import { Button } from 'primereact/button'
-import { ToastContainer, toast } from 'react-toastify'
+import { ToastContainer } from 'react-toastify'
 import { InputText } from 'primereact/inputtext'
 import { InputTextarea } from 'primereact/inputtextarea'
 import moment from 'moment'

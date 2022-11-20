@@ -5,9 +5,10 @@ import 'primeicons/primeicons.css'
 import { Routes, Route, Outlet, Navigate } from 'react-router-dom'
 import { MainContainer } from '@/pages/MainContainer'
 import { Login } from '@/pages/Login'
-import { Overview as OverviewConsult } from './pages/consults/Overview'
-import { Overview as OverviewInventory } from './pages/medicines/Overview'
-import { Overview as OverviewRecords } from './pages/records/Overview'
+import { Overview as OverviewConsult } from '@/pages/consults/Overview'
+import { Overview as OverviewInventory } from '@/pages/medicines/Overview'
+import { Overview as OverviewRecords } from '@/pages/records/Overview'
+import { Detail } from '@/pages/consults/Detail'
 
 const _LOGGED_CONTEXT = 'LOGGED'
 
@@ -23,7 +24,8 @@ function App() {
         >
           <Route exact path='/' element={<MainContainer />}>
             <Route path='' element={<span>dashboard</span>} />
-            <Route path='consulta' element={<OverviewConsult />} />
+            <Route path='consulta/*' element={<OverviewConsult />} />
+            <Route path='consulta/:id' element={<Detail />} />
             <Route path='medicamentos' element={<OverviewInventory />} />
             <Route path='expediente' element={<OverviewRecords />} />
           </Route>

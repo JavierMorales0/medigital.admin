@@ -49,8 +49,6 @@ export const Overview = () => {
       <ToastContainer />
       {loading && <Loader />}
       <section>
-        <h4 className='m-0'>Medicamentos</h4>
-        <h6 className='m-0 _light ms-2'>Modulo de inventarios</h6>
         <div className='container'>
           <div className='mb-3' style={{ minHeight: '200px' }}>
             <section className='row'>

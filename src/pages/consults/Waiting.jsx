@@ -19,7 +19,7 @@ export const Waiting = () => {
         const response = await getWaitingConsults(controller.signal)
         setWaitingConsults(response)
       } catch (err) {
-        console.log(err)
+        showNotification(err.msg, 'error')
       } finally {
         setLoading(false)
       }

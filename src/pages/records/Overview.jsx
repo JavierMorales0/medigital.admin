@@ -1,16 +1,19 @@
 import { useState, createContext, useEffect } from 'react'
 import AutoCompleteComponent from '@/components/AutoCompleteComponent'
 import { ToastContainer, toast } from 'react-toastify'
-import { getPatients } from '@/api/endpoints.js'
+import { getPatients, getConsultsByPatient } from '@/api/endpoints.js'
 import { Loader } from '@/components/Loader'
+import { TimelineConsults } from '@/components/TimelineConsults'
 
 export const RecordContext = createContext()
 
 export const Overview = () => {
   const [patient, setPatient] = useState('')
+  const [detailPatient, setDetailPatient] = useState(null)
   const [patients, setPatients] = useState([])
   const [filteredPatients, setFilteredPatients] = useState([])
   const [loading, setLoading] = useState(false)
+  const [consults, setConsults] = useState([])
 
   useEffect(() => {
     const controllerGetPatients = new AbortController()
@@ -25,7 +28,6 @@ export const Overview = () => {
             detail: `${item.first_name} ${item.last_name} / ${item?.dui}`,
           }
         })
-        console.log(response)
         setPatients(patientsWithFullNameAndDui)
       } catch (err) {
         showNotification(err.msg, 'error')
@@ -40,9 +42,25 @@ export const Overview = () => {
   }, [])
 
   useEffect(() => {
-    if (patient.length !== 24) return
-    console.log('pedir consults')
+    if (patient.length !== 24) {
+      setDetailPatient(null)
+      setConsults([])
+      return
+    }
+    _getConsultsByPatient(patient)
   }, [patient])
+
+  const _getConsultsByPatient = async (_id) => {
+    try {
+      setLoading(true)
+      const response = await getConsultsByPatient(_id)
+      setConsults(response)
+    } catch (err) {
+      showNotification(err.msg, 'error')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const searchPatient = (event) => {
     const filter = findMatchesInName(event.query.toLowerCase(), patients)
@@ -53,12 +71,10 @@ export const Overview = () => {
     <>
       {loading && <Loader />}
       <ToastContainer />
-      <h4 className='m-0'>Expediente</h4>
-      <h6 className='m-0 _light ms-2'>Modulo de expediente</h6>
       <RecordContext.Provider value={{ patient, setPatient }}>
         <section className='container text-center'>
           <p className='_bold mb-1'>Ingrese nombre de paciente</p>
-          <div className='w-50 mx-auto'>
+          <div className='w-50 mx-auto mb-2'>
             <AutoCompleteComponent
               value={patient}
               suggestions={filteredPatients}
@@ -68,9 +84,35 @@ export const Overview = () => {
               setValue={(e) => setPatient(e.value)}
               setData={(e) => {
                 setPatient(e.value._id)
+                setDetailPatient(e.value)
               }}
             />
           </div>
+          <hr />
+          {detailPatient ? (
+            <div className='container text-start' style={{ fontSize: '16px' }}>
+              <p className='my-1 _bold' style={{ fontSize: '24px' }}>
+                {detailPatient?.name}
+              </p>
+              <p className='m-0 '>DUI: {detailPatient?.dui}</p>
+              <p className='m-0'>Tipo de sangre: {detailPatient?.blood_type}</p>
+              <p className='m-0 '>Contacto:</p>
+              <ul className='m-0'>
+                {detailPatient?.phone_number?.map((item, index) => {
+                  return <li key={index}>{item}</li>
+                })}
+              </ul>
+              <p className='m-0 _bold'>{`${detailPatient.address}, ${detailPatient.municipality.name}, ${detailPatient.department.name}`}</p>
+            </div>
+          ) : (
+            <p>No se ha seleccionado ning&uacute;n paciente</p>
+          )}
+          <hr />
+          {detailPatient ? (
+            <div className='container mt-4'>
+              <TimelineConsults consults={consults} />
+            </div>
+          ) : null}
         </section>
       </RecordContext.Provider>
     </>

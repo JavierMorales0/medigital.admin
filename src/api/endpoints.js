@@ -126,3 +126,12 @@ export const getMovements = (signal) => {
       .catch((error) => reject(error))
   })
 }
+
+export const getConsultsByPatient = (_id) => {
+  return new Promise((resolve, reject) => {
+    _API
+      .get(`/consults?patient=${_id}`)
+      .then(({ data }) => resolve(data))
+      .catch((error) => reject(error))
+  })
+}

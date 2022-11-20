@@ -11,8 +11,6 @@ export const Overview = () => {
   const [activeIndex, setActiveIndex] = useState(0)
   return (
     <section className=''>
-      <h4 className='m-0'>Consultas</h4>
-      <h6 className='m-0 _light ms-2'>Modulo de consultas</h6>
       <div className='container'>
         <ConsultContext.Provider
           value={{ selectedConsult, setSelectedConsult }}

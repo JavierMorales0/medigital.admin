@@ -1,11 +1,12 @@
 import { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, Link, useLocation } from 'react-router-dom'
 import { mainRoutes, routes } from '@/helpers/routes.js'
 import { AutoComplete } from 'primereact/autocomplete'
 import '@/assets/css/Navbar.css'
 
 export const NavBar = () => {
   const navigate = useNavigate()
+  const { pathname } = useLocation()
   const [search, setSearch] = useState('')
   const [suggestions, setSuggestions] = useState(routes)
   /**
@@ -41,7 +42,10 @@ export const NavBar = () => {
         <div className=''>
           <span className=' _bold text-center'>
             MEDIGITAL
-            <span className='_boldest' style={{ fontSize: '.8rem' }}>
+            <span
+              className='_boldest'
+              style={{ fontSize: '.8rem', color: 'var(--primary-color)' }}
+            >
               .admin
             </span>
           </span>
@@ -67,8 +71,14 @@ export const NavBar = () => {
               <Link
                 key={item.label}
                 to={item.url}
-                className='m-0 _link'
-                style={{ textDecoration: 'none', color: 'var(--color-text)' }}
+                className='m-0 '
+                style={{
+                  textDecoration: pathname === item.url ? 'underline' : 'none',
+                  color:
+                    pathname === item.url
+                      ? 'var(--primary-color)'
+                      : 'var(--color-text)',
+                }}
               >
                 {item.label}
               </Link>
