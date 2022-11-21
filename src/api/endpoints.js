@@ -7,6 +7,15 @@ _API.interceptors.request.use(function (config) {
   return config
 })
 
+export const login = (data) => {
+  return new Promise((resolve, reject) => {
+    _API
+      .post(`/users/auth`, data)
+      .then(({ data }) => resolve(data))
+      .catch((error) => reject(error))
+  })
+}
+
 export const getSpecificAppointment = (_id) => {
   return new Promise((resolve, reject) => {
     _API
