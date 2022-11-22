@@ -30,15 +30,29 @@ export const Login = () => {
   }
   const _login = async (data) => {
     try {
+      const isValid = validateData(data)
+      if (!isValid.status) {
+        showNotification(isValid.msg, 'warning')
+        return
+      }
       setLoading(true)
       const { credential } = await login(data)
       localStorage.setItem('medigital.admin:credential', credential)
       navigate('/', { replace: true })
     } catch (err) {
-      showNotification(err.msg, 'error')
+      showNotification('Credenciales inválidas', 'error')
     } finally {
       setLoading(false)
     }
+  }
+  const validateData = ({ username, password }) => {
+    if (!username) {
+      return { status: false, msg: 'El nombre de usuario es requerido' }
+    }
+    if (!password) {
+      return { status: false, msg: 'La contraseña es requerida' }
+    }
+    return { status: true, msg: '' }
   }
   return (
     <>

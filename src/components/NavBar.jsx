@@ -32,6 +32,11 @@ export const NavBar = () => {
     navigate(route.url)
   }
 
+  const handleLogOut = () => {
+    localStorage.clear()
+    navigate('/login')
+  }
+
   return (
     <>
       <nav
@@ -70,7 +75,11 @@ export const NavBar = () => {
           />
         </div>
         {openMenu ? (
-          <Menu setOpenMenu={setOpenMenu} pathname={pathname} />
+          <Menu
+            setOpenMenu={setOpenMenu}
+            pathname={pathname}
+            handleLogOut={handleLogOut}
+          />
         ) : null}
         <div
           className='d-flex flex-row align-items-center justify-content-around gap-2'
@@ -81,7 +90,7 @@ export const NavBar = () => {
   )
 }
 
-const Menu = ({ setOpenMenu, pathname }) => {
+const Menu = ({ setOpenMenu, pathname, handleLogOut }) => {
   return (
     <article
       style={{
@@ -91,7 +100,8 @@ const Menu = ({ setOpenMenu, pathname }) => {
         bottom: 0,
         width: '300px',
         zIndex: 2,
-        backgroundColor: 'var(--surface-0)',
+        backgroundColor: 'var(--surface-900)',
+        color: 'var(--primary-color-text)',
       }}
       className='py-3 px-4'
     >
@@ -103,10 +113,10 @@ const Menu = ({ setOpenMenu, pathname }) => {
           top: '10px',
           right: '10px',
         }}
-        className='p-button-rounded p-button-outlined'
+        className='p-button-rounded '
         onClick={() => setOpenMenu((current) => !current)}
       />
-      <p className='_bold m-0'>Username</p>
+      <p className='_bold m-0'>ADMIN</p>
       <p
         className=''
         style={{ fontSize: '.9rem', color: 'var(--primary-color)' }}
@@ -137,7 +147,12 @@ const Menu = ({ setOpenMenu, pathname }) => {
         })}
       </div>
       <hr />
-      <p>Cierra sesi&oacute;n</p>
+      <Button
+        label='Cerrar sesi&oacute;n'
+        icon='pi pi-sign-out '
+        className='mx-auto d-block'
+        onClick={handleLogOut}
+      />
     </article>
   )
 }

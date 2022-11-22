@@ -1,11 +1,24 @@
 import _API from '@/api/index.js'
 import { getCredentialFromLocalStorage } from '@/helpers/auth.js'
+import { useNavigate } from 'react-router-dom'
 
 _API.interceptors.request.use(function (config) {
   const token = getCredentialFromLocalStorage()
   config.headers.Authorization = token ? `Bearer ${token}` : ''
   return config
 })
+_API.interceptors.response.use((config) => {
+  if (config.status === 403) {
+    localStorage.clear()
+    RedirectLogin()
+  }
+  return config
+})
+// REDIRECT LOGIN
+const RedirectLogin = () => {
+  const navigate = useNavigate()
+  navigate('/login', { replace: true })
+}
 
 export const login = (data) => {
   return new Promise((resolve, reject) => {
