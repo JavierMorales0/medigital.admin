@@ -8,6 +8,7 @@ import { Login } from '@/pages/Login'
 import { Overview as OverviewConsult } from '@/pages/consults/Overview'
 import { Overview as OverviewInventory } from '@/pages/medicines/Overview'
 import { Overview as OverviewRecords } from '@/pages/records/Overview'
+import { Overview as OverviewDashboard } from '@/pages/Overview'
 import { Detail } from '@/pages/consults/Detail'
 
 const _LOGGED_CONTEXT = 'LOGGED'
@@ -23,7 +24,7 @@ function App() {
           element={<ConditionalRoute content={_LOGGED_CONTEXT} />}
         >
           <Route exact path='/' element={<MainContainer />}>
-            <Route path='' element={<span>dashboard</span>} />
+            <Route path='' element={<OverviewDashboard />} />
             <Route path='consulta/*' element={<OverviewConsult />} />
             <Route path='consulta/:id' element={<Detail />} />
             <Route path='medicamentos' element={<OverviewInventory />} />

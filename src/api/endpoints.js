@@ -14,10 +14,22 @@ _API.interceptors.response.use((config) => {
   }
   return config
 })
+
 // REDIRECT LOGIN
 const RedirectLogin = () => {
   const navigate = useNavigate()
   navigate('/login', { replace: true })
+}
+
+export const getInfo = (signal) => {
+  return new Promise((resolve, reject) => {
+    _API
+      .get(`/info`, {
+        signal,
+      })
+      .then(({ data }) => resolve(data))
+      .catch((error) => reject(error))
+  })
 }
 
 export const login = (data) => {
